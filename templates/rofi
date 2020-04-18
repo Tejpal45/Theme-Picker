@@ -3,6 +3,8 @@
 */
 
 configuration {
+	font: \"Hack 10.5 \";
+	separator-style: \"solid\";
 	lines: 5;
 	columns: 2;
 	bw: 10;

@@ -6,14 +6,6 @@ elif [ "$1" = "add" ] || [ "$1" = "Add" ]
 then 
 	source ~/themePicker/themeGen
 
-#	if [ -z "$2"  ] 
-#	then
-#		echo "No theme name given. Try again."
-#		echo Proper usage themeSelect add [Theme Name]
-#	else
-#		echo $2	>> ~/themePicker/themesList
-#		echo "$2 theme added to theme list"
-#	fi
 elif [ -z "$1" ] || [ "$1" = "help" ]
 then
 	echo Possible arguments:

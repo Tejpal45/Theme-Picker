@@ -1,24 +1,23 @@
 #!/bin/bash
-read -p 'Enter theme name: ' theme
-if [ ! -f ~/themePicker/themes/"$theme" ] 
-then
-	echo Theme $theme does not exist.  
-	exit;
-fi 
-IFS=$'\n' read -d '' -r -a colors < ~/themePicker/themes/$theme
+if [ -z $2 ]
+then	
+	read -p 'Enter theme name: ' theme
+	if [ ! -f ~/themePicker/themes/"$theme" ] 
+	then
+		echo Theme $theme does not exist.  
+		exit;
+	fi 
+else
+	theme=$2
+fi
 
-for color in ${colors[@]}
-do
-	echo $color
-done
+ignore=$'\n' read -d '' -r -a colors < ~/themePicker/themes/$theme
 
 for template in ~/themePicker/templates/*
 do
 	file=$(sed -n '2p' < $template)
 	file=${file#?}	
 	rm $file
-	#echo $file
-	echo $template
 	cp $template $file
 	eval "echo \"$(cat "$file")\"" > $file 
 done

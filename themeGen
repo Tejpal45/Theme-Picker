@@ -8,7 +8,6 @@ fi
 
 for var in "$@"
 do 
-	echo $var
 	if [ "$var" != add ] || [ "$var" != "Add" ]
 	then
 		if [ $(echo $var | head -c 1) = "#" ]
