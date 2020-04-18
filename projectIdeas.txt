@@ -1,0 +1,12 @@
+Working on:
+Config Generation
+
+
+Future Plans:
+Use https://github.com/dragdropsite/waterpipe.js to autogen wallpaper from config
+Add autocompletions for all commands
+Random Theme Generator
+more to come.....
+
+
+

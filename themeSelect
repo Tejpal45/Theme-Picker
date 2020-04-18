@@ -1,0 +1,32 @@
+#!/bin/bash
+if [ "$1" = "list" ] || [ "$1" = "List" ]
+then 
+	cat ~/themePicker/themesList
+elif [ "$1" = "add" ] || [ "$1" = "Add" ]
+then 
+	source ~/themePicker/themeGen
+
+#	if [ -z "$2"  ] 
+#	then
+#		echo "No theme name given. Try again."
+#		echo Proper usage themeSelect add [Theme Name]
+#	else
+#		echo $2	>> ~/themePicker/themesList
+#		echo "$2 theme added to theme list"
+#	fi
+elif [ -z "$1" ] || [ "$1" = "help" ]
+then
+	echo Possible arguments:
+	echo Add ....................... Add a theme to theme list.
+	echo List ...................... List all themes.
+	echo Change .................... Change themes.
+elif [ "$1" = "change" ] || [ "$1" = "Change" ] 
+then
+	source ~/themePicker/configGen			
+	echo "Theme changed"
+       	echo "reinitilizing polybar..."
+	source ~/.config/polybar/launch.sh &
+fi
+
+
+

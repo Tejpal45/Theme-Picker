@@ -1,0 +1,12 @@
+##Config file location
+#/home/tejpal/.config/polybar/colors.ini
+[colors]
+background=${colors[0]}
+foreground=${colors[1]}
+alert=${colors[2]}
+accent1=${colors[3]}
+accent1alt=${colors[4]}
+accent2=${colors[5]}
+accent2alt=${colors[6]}
+active=${colors[7]}
+activeForeground=${colors[0]}

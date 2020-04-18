@@ -1,0 +1,19 @@
+/*Config file location
+//home/tejpal/.config/rofi/config.rasi
+*/
+
+configuration {
+	lines: 5;
+	columns: 2;
+	bw: 10;
+	padding: 5;
+	fixed-num-lines: true;
+	sidebar-mode: true;
+	show-icons: true;
+	hide-scrollbar: true;
+	
+
+	color-normal: \" ${colors[0]}, ${colors[1]}, ${colors[0]}, ${colors[3]}, ${colors[7]} \";
+	color-active: \" ${colors[7]}, ${colors[0]}, ${colors[7]}, ${colors[3]}, ${colors[7]} \";
+	color-window: \" ${colors[0]}, ${colors[0]}, ${colors[1]} \";
+}

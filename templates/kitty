@@ -1,0 +1,12 @@
+## Config file location
+#/home/tejpal/.config/kitty/kitty.conf
+
+
+font_family	 Hack
+font_size 15.0
+symbol_map U+E0A0-U+E0A3,U+E0C0-U+E0C7 PowerlineSymbols
+enable_audio_bell no
+foreground ${colors[1]}
+background ${colors[0]}
+allow_remote_control yes 
+
