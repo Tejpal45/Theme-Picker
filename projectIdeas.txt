@@ -1,6 +1,9 @@
-Working on:
+Done
 Config Generation
 
+Working on:
+Theme Invert
+Cleaning and combining
 
 Future Plans:
 Use https://github.com/dragdropsite/waterpipe.js to autogen wallpaper from config

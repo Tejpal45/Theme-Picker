@@ -1,24 +1,123 @@
-#!/bin/bash
-if [ "$1" = "list" ] || [ "$1" = "List" ]
-then 
-	cat ~/themePicker/themesList
-elif [ "$1" = "add" ] || [ "$1" = "Add" ]
-then 
-	source ~/themePicker/themeGen
+#!/bin/sh
 
-elif [ -z "$1" ] || [ "$1" = "help" ]
-then
-	echo Possible arguments:
-	echo Add ....................... Add a theme to theme list.
-	echo List ...................... List all themes.
-	echo Change .................... Change themes.
-elif [ "$1" = "change" ] || [ "$1" = "Change" ] 
-then
-	source ~/themePicker/configGen			
-	echo "Theme changed"
-       	echo "reinitilizing polybar..."
-	source ~/.config/polybar/launch.sh &
-fi
+configGen() {
+	if [ -z ${OPTARG} ]
+	then
+		listFunc
+		read -p 'Enter theme name: ' theme
+		if [ ! -f ~/themePicker/themes/"$theme" ] 
+		then
+			echo Theme $theme does not exist.  
+			exit;
+		fi 
+	else
+		theme=${OPTARG}
+	fi
+
+	if [ -f ~/themePicker/themes/"$theme" ]
+	then
+
+		ignore=$'\n' read -d '' -r -a colors < ~/themePicker/themes/$theme 
+		for template in ~/themePicker/templates/*
+		do
+			file=$(sed -n '2p' < $template)
+			file=${file#?}	
+			rm $file
+			cp $template $file
+			eval "echo \"$(cat "$file")\"" > $file 
+		done
+
+		if [ $(polybar --list-monitors | wc -l) != 1 ]
+		then
+			nitrogen --set-zoom-fill ~/Pictures/Wallpapers/"$theme".png --head=1 &
+		fi
+
+		nitrogen --set-zoom-fill ~/Pictures/Wallpapers/"$theme".png --head=0 &
+
+		echo "Theme Changed..."
+		echo "reinitilizing polybar..."
+		kitty @ set-colors ~/.config/kitty/kitty.conf
+		source ~/.config/polybar/launch.sh &
+	else 
+		echo "Theme $theme does not exist!"
+	fi
+}	
 
 
+themeGen() {
+
+	colorName=("Background" "Foreground" "Alert" "Accent 1" "Accent 1 Alternative" "Accent 2" "Accent 2 Alternative" "Active")
+
+	read -p 'Enter Theme Name: ' fileName
+
+	if test -f ~/themePicker/themes/"$fileName"
+	then
+		echo Theme "$fileName" already exsists...
+		read -p 'Do you want to overwrite the theme? ' ans
+		if [ "$ans" = "y" ] || [ "$ans" = "yes" ] || [ -z "@ans" ]
+		then
+			rm ~/themePicker/themes/$fileName
+		else 
+			read -p 'Enter different name for the new theme: ' fileName
+		fi
+	fi
+	echo "Enter all colors as hex colors without a #"
+	for i in range {1..7..1}
+	do
+		read -p "Enter ${colorName[i]} color: " color
+		while [ $(echo $color | head -c 1) = "#" ] || [ $(expr length "$color") != 6 ]
+		do 
+			if [ $(echo $color | head -c 1) = "#" ]
+			then
+				echo "Input ${colorName[i]} without the starting #"
+			
+			fi
+			if [ $(expr length "$color") != 6 ]		
+			then
+				echo "$color is only $(expr length "$color") charcters long, and it should be 6... \n try again... "
+			
+			fi	
+			read -p "Enter ${colorName[i]} color: " color
+		done
+		echo '#'$color | tee -a ~/themePicker/themes/$fileName > /dev/null
+	done
+}
+
+helpFunc() {
+      	echo "Usage:"
+	echo "	-h 			Display this page."
+	echo "	-c [theme name]		Change themes to [theme name]"
+	echo "	-a 			Add theme to theme list. Must include 7 hex colors."
+	echo "	-l 			List current themes"
+	exit 0
+}	
+
+listFunc() {
+	echo "The avaliable themes are..."
+	ls -1 ~/themePicker/themes/
+}
+
+while getopts ":c:hal" opt; do
+	case ${opt} in
+		h )
+	    		helpFunc		
+      			;;
+		
+		c )
+			configGen
+			;;
+
+		a ) 
+			themeGen
+			;;
+
+		l )
+			listFunc	
+			;;
+		\? )
+      			echo "Invalid Option: -$OPTARG" 1>&2
+      			exit 1
+      			;;
+  	esac
+done
 

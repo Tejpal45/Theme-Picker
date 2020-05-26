@@ -1,0 +1,33 @@
+#!/bin/bash
+configGen() {
+
+	if [ -z $2 ]
+	then	
+		read -p 'Enter theme name: ' theme
+		if [ ! -f ~/themePicker/themes/"$theme" ] 
+		then
+			echo Theme $theme does not exist.  
+			exit;
+		fi 
+	else
+		theme=$2
+	fi
+
+	ignore=$'\n' read -d '' -r -a colors < ~/themePicker/themes/$theme
+
+	for template in ~/themePicker/templates/*
+	do
+		file=$(sed -n '2p' < $template)
+		file=${file#?}	
+		rm $file
+		cp $template $file
+		eval "echo \"$(cat "$file")\"" > $file 
+	done
+
+	if [ $(polybar --list-monitors | wc -l) != 1 ]
+	then
+		nitrogen --set-zoom-fill ~/Pictures/Wallpapers/"$theme".png --head=1 &
+	fi
+
+	nitrogen --set-zoom-fill ~/Pictures/Wallpapers/"$theme".png --head=0 &
+}	

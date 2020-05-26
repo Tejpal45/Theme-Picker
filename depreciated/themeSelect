@@ -1,0 +1,97 @@
+#!/bin/bash
+shopt -s nocasematch
+
+if [ "$1" = "list" ] || [ "$1" = "List" ]
+then 
+ 	ls ~/themePicker/themes
+elif [ "$1" = "add" ] || [ "$1" = "Add" ]
+then 
+#adding a new theme to my theme lists...	
+	if [ -z "$9" ]
+	then
+		echo Not enough arguments...
+		echo 8 arguments required
+		echo Background, Foreground, Alert, Accent1, Accent1 Alt, Accent2, Accent2 Alt, and Active
+	fi
+
+	for var in "$@"
+	do 
+		if [ $(echo $var | head -c 1) = "#" ] && [ "$var" != "add" ]
+		then
+				echo $var does not need "#"
+		exit;
+		elif [ $(expr length "$var") != 6 ]  && [ "$var" != "add" ]
+		then
+			echo $var is only $(expr length "$var") charcters. Should be 6. 
+			exit;
+		fi
+
+	done
+
+	read -p 'Enter Theme Name: ' fileName
+
+	if test -f ~/themePicker/themes/"$fileName"
+	then
+		echo Theme "$fileName" already exsists...
+		read -p 'Do you want to overwrite the theme? ' ans
+		if [ "$ans" = "y" ] || [ "$ans" = "yes" ]
+		then
+			rm ~/themePicker/themes/$fileName
+		else 
+			read -p 'Enter different name for the new theme: ' fileName
+		fi
+	fi
+
+	for colors in "$@"
+	do 
+		echo '#'$colors | tee -a ~/themePicker/themes/$fileName > /dev/null
+	done
+
+
+elif [ -z "$1" ] || [ "$1" = "help" ]
+then
+	echo Possible arguments:
+	echo Add ....................... Add a theme to theme list.
+	echo List ...................... List all themes.
+	echo Change .................... Change themes.
+elif [ "$1" = "change" ] || [ "$1" = "Change" ] 
+then
+#Changing themes...
+	if [ -z $2 ]
+	then	
+		read -p 'Enter theme name: ' theme
+		if [ ! -f ~/themePicker/themes/"$theme" ] 
+		then
+			echo Theme $theme does not exist.  
+			exit;
+		fi 
+	else
+		theme=$2
+	fi
+	
+	ignore=$'\n' read -d '' -r -a colors < ~/themePicker/themes/$theme
+	
+	for template in ~/themePicker/templates/*
+	do
+		file=$(sed -n '2p' < $template)
+		file=${file#?}	
+		rm $file
+		cp $template $file
+		eval "echo \"$(cat "$file")\"" > $file 
+	done
+
+	if [ $(polybar --list-monitors | wc -l) != 1 ]
+	then
+		nitrogen --set-zoom-fill ~/Pictures/Wallpapers/"$theme".png --head=1 &
+	fi
+	
+	nitrogen --set-zoom-fill ~/Pictures/Wallpapers/"$theme".png --head=0 &
+
+	echo "Theme changed"
+       	echo "reinitilizing polybar..."
+	kitty @ set-colors --all --configured ~/.config/kitty/kitty.conf
+	source ~/.config/polybar/launch.sh &
+fi
+
+
+
